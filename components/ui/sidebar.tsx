@@ -7,9 +7,9 @@ import { IconMenu2, IconX } from "@tabler/icons-react";
 
 export interface Links {
   label: string;
-  href?: string;
+  href?: string | null; // Allow null as a type here
   icon: React.JSX.Element | React.ReactNode;
-  onClick?: () => void; // Add this line
+  onClick?: () => void;
 }
 
 interface SidebarContextProps {
@@ -86,23 +86,22 @@ export const DesktopSidebar = ({
   ...props
 }: React.ComponentProps<typeof motion.div>) => {
   const { open, setOpen, animate } = useSidebar();
+
   return (
-    <>
-      <motion.div
-        className={cn(
-          "h-full px-4 py-4 hidden  md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 w-[300px] flex-shrink-0",
-          className
-        )}
-        animate={{
-          width: animate ? (open ? "300px" : "60px") : "300px",
-        }}
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
-        {...props}
-      >
-        {children}
-      </motion.div>
-    </>
+    <motion.div
+      className={cn(
+        "h-full px-4 py-4 hidden md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 w-[60px] flex-shrink-0 transition-all duration-300",
+        className
+      )}
+      animate={{
+        width: animate ? (open ? "300px" : "60px") : "60px", // Collapse to 60px when not open, expand to 300px when open
+      }}
+      onMouseEnter={() => setOpen(true)} // On hover, expand the sidebar
+      onMouseLeave={() => setOpen(false)} // On hover leave, collapse the sidebar
+      {...props}
+    >
+      {children}
+    </motion.div>
   );
 };
 

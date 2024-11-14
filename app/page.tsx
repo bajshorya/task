@@ -1,6 +1,12 @@
-import { redirect } from "next/navigation";
+import { SidebarDemo } from "@/components/SidebarDemo";
+import React from "react";
 
-export default function Home() {
-  redirect("/dashboard");
-  return null;
-}
+const page = () => {
+  return (
+    <div>
+      <SidebarDemo />
+    </div>
+  );
+};
+
+export default page;
