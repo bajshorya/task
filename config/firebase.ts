@@ -1,7 +1,13 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
@@ -30,6 +36,7 @@ export const addTaskToFirestore = async (taskData: TaskData) => {
     console.error("Error adding task to Firestore:", error);
   }
 };
+
 
 export interface TaskData {
   title: string;

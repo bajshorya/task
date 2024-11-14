@@ -7,7 +7,7 @@ import { getAuth, signOut, User } from "firebase/auth";
 import app, { addTaskToFirestore } from "@/config/firebase";
 import { useRouter } from "next/navigation";
 import TaskForm, { TaskData } from "../components/TaskForm";
-import { Dashboard } from "./Dashboard";
+import Dashboard from "./Dashboard";
 
 const auth = getAuth(app);
 

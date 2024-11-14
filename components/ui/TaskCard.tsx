@@ -1,6 +1,7 @@
 import React from "react";
 
-interface TaskCardProps {
+export interface TaskCardProps {
+  id: string;
   title: string;
   description: string;
   dueDate: string;
@@ -9,6 +10,7 @@ interface TaskCardProps {
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({
+  id,
   title,
   description,
   dueDate,
