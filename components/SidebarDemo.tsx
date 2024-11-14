@@ -14,7 +14,7 @@ const auth = getAuth(app);
 export function SidebarDemo() {
   const [user, setUser] = useState<User | null>(null);
   const [open, setOpen] = useState(false);
-  const [currentView, setCurrentView] = useState("dashboard"); // State to track the selected view
+  const [currentView, setCurrentView] = useState("dashboard"); 
   const router = useRouter();
   const handleAddTask = async (taskData: TaskData) => {
     try {
@@ -99,7 +99,6 @@ export function SidebarDemo() {
 
       <div className="flex flex-1">
         <div className="p-2 md:p-10 text-white rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
-          {/* Render the current view based on selected link */}
           {currentView === "dashboard" && <Dashboard />}
           {currentView === "taskForm" && (
             <div className="h-screen bg-neutral-900 flex items-center justify-center">

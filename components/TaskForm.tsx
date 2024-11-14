@@ -57,7 +57,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit }) => {
     >
       <div className="text-2xl text-white font-semibold mb-4">Add New Task</div>
       <div className="space-y-4">
-        {/* Task Title */}
         <div>
           <label htmlFor="title" className="block text-sm text-gray-300">
             Task Title
@@ -74,7 +73,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit }) => {
           />
         </div>
 
-        {/* Task Description */}
         <div>
           <label htmlFor="description" className="block text-sm text-gray-300">
             Description
@@ -90,7 +88,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit }) => {
           />
         </div>
 
-        {/* Due Date */}
         <div>
           <label htmlFor="dueDate" className="block text-sm text-gray-300">
             Due Date
@@ -106,7 +103,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit }) => {
           />
         </div>
 
-        {/* Priority */}
         <div>
           <label htmlFor="priority" className="block text-sm text-gray-300">
             Priority
@@ -124,7 +120,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit }) => {
           </select>
         </div>
 
-        {/* Status */}
         <div>
           <label htmlFor="status" className="block text-sm text-gray-300">
             Status
@@ -142,7 +137,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit }) => {
           </select>
         </div>
 
-        {/* Submit Button */}
         <div className="mt-4">
           <button
             type="submit"

@@ -7,7 +7,7 @@ import { IconMenu2, IconX } from "@tabler/icons-react";
 
 export interface Links {
   label: string;
-  href?: string | null; // Allow null as a type here
+  href?: string | null; 
   icon: React.JSX.Element | React.ReactNode;
   onClick?: () => void;
 }
@@ -94,10 +94,10 @@ export const DesktopSidebar = ({
         className
       )}
       animate={{
-        width: animate ? (open ? "300px" : "60px") : "60px", // Collapse to 60px when not open, expand to 300px when open
+        width: animate ? (open ? "300px" : "60px") : "60px", 
       }}
-      onMouseEnter={() => setOpen(true)} // On hover, expand the sidebar
-      onMouseLeave={() => setOpen(false)} // On hover leave, collapse the sidebar
+      onMouseEnter={() => setOpen(true)} 
+      onMouseLeave={() => setOpen(false)} 
       {...props}
     >
       {children}
@@ -166,7 +166,6 @@ export const SidebarLink = ({
   const { open, animate } = useSidebar();
 
   return link.href ? (
-    // Render Link if href is defined
     <Link
       href={link.href}
       className={cn(
@@ -188,7 +187,6 @@ export const SidebarLink = ({
       </motion.span>
     </Link>
   ) : (
-    // Render button if href is undefined
     <button
       onClick={link.onClick}
       className={cn(

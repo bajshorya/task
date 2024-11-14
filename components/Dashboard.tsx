@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import TaskCard, { TaskCardProps } from "../components/ui/TaskCard"; // Import TaskCard component
+import TaskCard, { TaskCardProps } from "../components/ui/TaskCard"; 
 import { db } from "@/config/firebase";
 
 const Dashboard: React.FC = () => {
@@ -15,12 +15,12 @@ const Dashboard: React.FC = () => {
           const data = doc.data();
           return {
             id: doc.id,
-            title: data.title ?? "", // Provide default empty string if undefined
+            title: data.title ?? "", 
             description: data.description ?? "",
             dueDate: data.dueDate ?? "",
             priority: data.priority ?? "low",
             status: data.status ?? "To Do",
-          } as TaskCardProps; // Type assertion to ensure TaskCardProps type
+          } as TaskCardProps;
         });
         setTasks(tasksList);
       } catch (error) {
