@@ -1,13 +1,9 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+
 const firebaseConfig = {
   apiKey: "AIzaSyCO99ub1hjxdBpGhG-YE3ZZXVw-vr8uJ4o",
   authDomain: "taskmanagementsystem-50d79.firebaseapp.com",
@@ -18,10 +14,27 @@ const firebaseConfig = {
   measurementId: "G-SEZP04CLS1",
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const analytics = getAnalytics(app);
-export const db = getFirestore(app);
 export default app;
-export { auth, analytics };
+const analytics = getAnalytics(app);
+
+export const db = getFirestore(app);
+export const auth = getAuth(app);
+export { analytics };
+
+export const addTaskToFirestore = async (taskData: TaskData) => {
+  try {
+    const docRef = await addDoc(collection(db, "tasks"), taskData);
+    console.log("Task added with ID:", docRef.id);
+  } catch (error) {
+    console.error("Error adding task to Firestore:", error);
+  }
+};
+
+export interface TaskData {
+  title: string;
+  description: string;
+  dueDate: string;
+  priority: "low" | "medium" | "high";
+  status: "To Do" | "In Progress" | "Completed";
+}
