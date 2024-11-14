@@ -17,7 +17,7 @@ export default function SignUp() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(""); // Clear previous error
+    setError("");
 
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
@@ -26,7 +26,6 @@ export default function SignUp() {
 
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      // Redirect to login page or dashboard after successful signup
       router.push("/");
     } catch (err) {
       setError("Failed to create account. Please try again.");
@@ -34,7 +33,7 @@ export default function SignUp() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[#f8ece4] text-black-100">
+    <div className="flex items-center justify-center min-h-screen bg-[#f8ece4] text-white">
       <div className="bg-white shadow-lg rounded-2xl p-10 flex items-center gap-16 border-8 border-white text-black">
         <form onSubmit={handleSignUp} className="flex flex-col gap-6">
           <input

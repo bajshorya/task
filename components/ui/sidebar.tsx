@@ -5,10 +5,11 @@ import React, { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconMenu2, IconX } from "@tabler/icons-react";
 
-interface Links {
+export interface Links {
   label: string;
-  href: string;
+  href?: string;
   icon: React.JSX.Element | React.ReactNode;
+  onClick?: () => void; // Add this line
 }
 
 interface SidebarContextProps {
@@ -154,7 +155,6 @@ export const MobileSidebar = ({
     </>
   );
 };
-
 export const SidebarLink = ({
   link,
   className,
@@ -165,11 +165,13 @@ export const SidebarLink = ({
   props?: LinkProps;
 }) => {
   const { open, animate } = useSidebar();
-  return (
+
+  return link.href ? (
+    // Render Link if href is defined
     <Link
       href={link.href}
       className={cn(
-        "flex items-center justify-start gap-2  group/sidebar py-2",
+        "flex items-center justify-start gap-2 group/sidebar py-2",
         className
       )}
       {...props}
@@ -186,5 +188,26 @@ export const SidebarLink = ({
         {link.label}
       </motion.span>
     </Link>
+  ) : (
+    // Render button if href is undefined
+    <button
+      onClick={link.onClick}
+      className={cn(
+        "flex items-center justify-start gap-2 group/sidebar py-2",
+        className
+      )}
+    >
+      {link.icon}
+
+      <motion.span
+        animate={{
+          display: animate ? (open ? "inline-block" : "none") : "inline-block",
+          opacity: animate ? (open ? 1 : 0) : 1,
+        }}
+        className="text-neutral-700 dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0"
+      >
+        {link.label}
+      </motion.span>
+    </button>
   );
 };

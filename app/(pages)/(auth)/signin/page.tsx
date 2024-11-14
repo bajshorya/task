@@ -41,8 +41,8 @@ export default function SignIn() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[#f8ece4] text-black-100">
-      <div className="bg-white shadow-lg rounded-2xl p-10 flex items-center gap-16 border-8 border-white text-black">
+    <div className="flex items-center justify-center min-h-screen bg-black text-black-100">
+      <div className="bg-slate-900 shadow-lg rounded-2xl p-10 flex items-center gap-16 border-8 border-black text-white">
         <form onSubmit={handleSignIn} className="flex flex-col gap-6">
           <input
             type="email"
