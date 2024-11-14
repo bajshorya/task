@@ -14,12 +14,11 @@ const auth = getAuth(app);
 export function SidebarDemo() {
   const [user, setUser] = useState<User | null>(null);
   const [open, setOpen] = useState(false);
-  const [currentView, setCurrentView] = useState("dashboard"); 
+  const [currentView, setCurrentView] = useState("dashboard");
   const router = useRouter();
   const handleAddTask = async (taskData: TaskData) => {
     try {
       await addTaskToFirestore(taskData);
-      console.log("New Task added to Firestore:", taskData);
     } catch (error) {
       console.error("Error adding task:", error);
     }
@@ -35,8 +34,6 @@ export function SidebarDemo() {
     if (user) {
       try {
         await signOut(auth);
-        console.log("User signed out");
-        alert("User signed out");
         setUser(null);
       } catch (error) {
         console.error("Sign-out error:", error);

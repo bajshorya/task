@@ -1,43 +1,74 @@
-import React, { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import TaskCard, { TaskCardProps } from "../components/ui/TaskCard"; 
-import { db } from "@/config/firebase";
-
+import React, { use, useEffect, useState } from "react";
+import { collection, getDocs, where, query } from "firebase/firestore";
+import TaskCard, { TaskCardProps } from "../components/ui/TaskCard";
+import { auth, db } from "@/config/firebase";
+import { User, onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "next/navigation";
 const Dashboard: React.FC = () => {
+  const router = useRouter();
+  const routeToSignin = () => {
+    router.push("/signin");
+  };
   const [tasks, setTasks] = useState<TaskCardProps[]>([]);
-
+  const [user, setUser] = useState<User | null>(null);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const tasksCollection = collection(db, "tasks");
-        const tasksSnapshot = await getDocs(tasksCollection);
-        const tasksList = tasksSnapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            title: data.title ?? "", 
-            description: data.description ?? "",
-            dueDate: data.dueDate ?? "",
-            priority: data.priority ?? "low",
-            status: data.status ?? "To Do",
-          } as TaskCardProps;
-        });
-        setTasks(tasksList);
+        if (user) {
+          const tasksCollection = collection(db, "tasks");
+          const tasksQuery = query(
+            tasksCollection,
+            where("userId", "==", user.uid)
+          );
+          const tasksSnapshot = await getDocs(tasksQuery);
+          const tasksList = tasksSnapshot.docs.map((doc) => {
+            const data = doc.data();
+            return {
+              id: doc.id,
+              title: data.title ?? "",
+              description: data.description ?? "",
+              dueDate: data.dueDate ?? "",
+              priority: data.priority ?? "low",
+              status: data.status ?? "To Do",
+            } as TaskCardProps;
+          });
+          setTasks(tasksList);
+        }
       } catch (error) {
         console.error("Error fetching tasks from Firestore:", error);
       }
     };
 
     fetchTasks();
-  }, []);
+  }, [user]);
 
-  // Group tasks by status
   const groupedTasks = {
     "To Do": tasks.filter((task) => task.status === "To Do"),
     "In Progress": tasks.filter((task) => task.status === "In Progress"),
     Completed: tasks.filter((task) => task.status === "Completed"),
   };
 
+  if (!user) {
+    return (
+      <div className="p-4 text-center text-xl font-semibold">
+        Hey !!!! wanna Schedule your task more efficiently ... <br />
+        SIGNIN to Find out the way to do that in the most fun way possible
+        <br />
+        <button
+          onClick={routeToSignin}
+          className="border p-3 bg-slate-900 rounded-lg mt-3"
+        >
+          Get Started
+        </button>
+      </div>
+    );
+  }
   return (
     <div className="flex space-x-4 p-4">
       {Object.entries(groupedTasks).map(([status, tasks]) => (
@@ -48,7 +79,7 @@ const Dashboard: React.FC = () => {
               tasks.map((task) => (
                 <TaskCard
                   key={task.id}
-                  id={task.id} // Pass id here
+                  id={task.id}
                   title={task.title}
                   description={task.description}
                   dueDate={task.dueDate}

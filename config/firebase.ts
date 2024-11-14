@@ -30,13 +30,19 @@ export { analytics };
 
 export const addTaskToFirestore = async (taskData: TaskData) => {
   try {
-    const docRef = await addDoc(collection(db, "tasks"), taskData);
-    console.log("Task added with ID:", docRef.id);
+    const user = auth.currentUser;
+    if (user) {
+      const docRef = await addDoc(collection(db, "tasks"), {
+        ...taskData,
+        userId: user.uid,
+      });
+    } else {
+      console.error("npt logged in");
+    }
   } catch (error) {
-    console.error("Error adding task to Firestore:", error);
+    console.error("Error ", error);
   }
 };
-
 
 export interface TaskData {
   title: string;
