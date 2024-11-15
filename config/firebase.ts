@@ -1,6 +1,9 @@
+import dotenv from "dotenv";
+
+dotenv.config();
+
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-
 import {
   getFirestore,
   collection,
@@ -11,22 +14,22 @@ import {
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCO99ub1hjxdBpGhG-YE3ZZXVw-vr8uJ4o",
-  authDomain: "taskmanagementsystem-50d79.firebaseapp.com",
-  projectId: "taskmanagementsystem-50d79",
-  storageBucket: "taskmanagementsystem-50d79.firebasestorage.app",
-  messagingSenderId: "947182204873",
-  appId: "1:947182204873:web:ba002a6c862eefbf671a18",
-  measurementId: "G-SEZP04CLS1",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
 const app = initializeApp(firebaseConfig);
 export default app;
-const analytics = getAnalytics(app);
+// const analytics = getAnalytics(app);
 
 export const db = getFirestore(app);
 export const auth = getAuth(app);
-export { analytics };
+// export { analytics };
 
 export const addTaskToFirestore = async (taskData: TaskData) => {
   try {
@@ -37,10 +40,10 @@ export const addTaskToFirestore = async (taskData: TaskData) => {
         userId: user.uid,
       });
     } else {
-      console.error("npt logged in");
+      console.error("User is not logged in");
     }
   } catch (error) {
-    console.error("Error ", error);
+    console.error("Error adding task: ", error);
   }
 };
 

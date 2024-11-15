@@ -7,7 +7,7 @@ import { IconMenu2, IconX } from "@tabler/icons-react";
 
 export interface Links {
   label: string;
-  href?: string | null; 
+  href?: string | null;
   icon: React.JSX.Element | React.ReactNode;
   onClick?: () => void;
 }
@@ -94,10 +94,10 @@ export const DesktopSidebar = ({
         className
       )}
       animate={{
-        width: animate ? (open ? "300px" : "60px") : "60px", 
+        width: animate ? (open ? "300px" : "60px") : "60px",
       }}
-      onMouseEnter={() => setOpen(true)} 
-      onMouseLeave={() => setOpen(false)} 
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
       {...props}
     >
       {children}
@@ -187,10 +187,10 @@ export const SidebarLink = ({
       </motion.span>
     </Link>
   ) : (
-    <button
+    <p
       onClick={link.onClick}
       className={cn(
-        "flex items-center justify-start gap-2 group/sidebar py-2",
+        "flex items-center justify-start gap-2 group/sidebar py-2 hover:cursor-pointer",
         className
       )}
     >
@@ -205,6 +205,6 @@ export const SidebarLink = ({
       >
         {link.label}
       </motion.span>
-    </button>
+    </p>
   );
 };

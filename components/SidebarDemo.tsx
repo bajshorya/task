@@ -81,13 +81,13 @@ export function SidebarDemo() {
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
             <div className="mt-8 flex flex-col gap-2">
               {links.map((link, idx) => (
-                <button
+                <div
                   key={idx}
                   onClick={link.onClick}
                   className="w-full text-left"
                 >
                   <SidebarLink link={link} />
-                </button>
+                </div>
               ))}
             </div>
           </div>
