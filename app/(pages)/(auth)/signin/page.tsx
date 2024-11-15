@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { GithubAuthProvider } from "firebase/auth/web-extension";
+import { GithubAuthProvider } from "firebase/auth";
 import app from "../../../../config/firebase";
 import {
   getAuth,
@@ -24,12 +24,13 @@ export default function SignIn() {
       router.push("/");
     } catch (err) {
       setError("Failed to sign in with Github. Please try again.");
+      console.log(err);
     }
   };
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(""); // Clear previous error
+    setError("");
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
