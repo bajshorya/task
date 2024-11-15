@@ -73,9 +73,6 @@ const Dashboard: React.FC = () => {
   if (!user) {
     return (
       <div className="p-4 text-center text-xl font-semibold">
-        Hey !!!! wanna Schedule your task more efficiently ... <br />
-        SIGNIN to Find out the way to do that in the most fun way possible
-        <br />
         <button
           onClick={routeToSignin}
           className="border p-3 bg-slate-900 rounded-lg mt-3"
