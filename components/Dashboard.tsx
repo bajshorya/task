@@ -1,9 +1,17 @@
-import React, { use, useEffect, useState } from "react";
-import { collection, getDocs, where, query } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
 import TaskCard, { TaskCardProps } from "../components/ui/TaskCard";
 import { auth, db } from "@/config/firebase";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
+
 const Dashboard: React.FC = () => {
   const router = useRouter();
   const routeToSignin = () => {
@@ -11,42 +19,50 @@ const Dashboard: React.FC = () => {
   };
   const [tasks, setTasks] = useState<TaskCardProps[]>([]);
   const [user, setUser] = useState<User | null>(null);
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
     return () => unsubscribe();
   }, []);
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        if (user) {
-          const tasksCollection = collection(db, "tasks");
-          const tasksQuery = query(
-            tasksCollection,
-            where("userId", "==", user.uid)
-          );
-          const tasksSnapshot = await getDocs(tasksQuery);
-          const tasksList = tasksSnapshot.docs.map((doc) => {
-            const data = doc.data();
-            return {
-              id: doc.id,
-              title: data.title ?? "",
-              description: data.description ?? "",
-              dueDate: data.dueDate ?? "",
-              priority: data.priority ?? "low",
-              status: data.status ?? "To Do",
-            } as TaskCardProps;
-          });
-          setTasks(tasksList);
-        }
-      } catch (error) {
-        console.error("Error fetching tasks from Firestore:", error);
-      }
-    };
 
+  const fetchTasks = async () => {
+    try {
+      if (user) {
+        const tasksCollection = collection(db, "tasks");
+        const tasksQuery = query(
+          tasksCollection,
+          where("userId", "==", user.uid)
+        );
+        const tasksSnapshot = await getDocs(tasksQuery);
+        const tasksList = tasksSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          title: doc.data().title ?? "",
+          description: doc.data().description ?? "",
+          dueDate: doc.data().dueDate ?? "",
+          priority: doc.data().priority ?? "low",
+          status: doc.data().status ?? "To Do",
+        })) as TaskCardProps[];
+        setTasks(tasksList);
+      }
+    } catch (error) {
+      console.error("Error fetching tasks from Firestore:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchTasks();
   }, [user]);
+
+  const deleteTask = async (id: string) => {
+    try {
+      await deleteDoc(doc(db, "tasks", id));
+      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
+  };
 
   const groupedTasks = {
     "To Do": tasks.filter((task) => task.status === "To Do"),
@@ -69,6 +85,7 @@ const Dashboard: React.FC = () => {
       </div>
     );
   }
+
   return (
     <div className="flex space-x-4 p-4">
       {Object.entries(groupedTasks).map(([status, tasks]) => (
@@ -85,6 +102,7 @@ const Dashboard: React.FC = () => {
                   dueDate={task.dueDate}
                   priority={task.priority}
                   status={task.status}
+                  onDelete={deleteTask} // Pass delete function here
                 />
               ))
             ) : (

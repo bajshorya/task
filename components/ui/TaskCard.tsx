@@ -1,12 +1,15 @@
 import React from "react";
-
+import { doc, updateDoc, deleteField } from "firebase/firestore";
+import { MdDeleteOutline } from "react-icons/md";
+// Example type definition for TaskCardProps if you control it
 export interface TaskCardProps {
   id: string;
   title: string;
   description: string;
   dueDate: string;
   priority: "low" | "medium" | "high";
-  status: "To Do" | "In Progress" | "Completed";
+  status: "To Do" | "In Progress" | "Completed"; // Ensures correct status type
+  onDelete: (id: string) => void;
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({
@@ -16,6 +19,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
   dueDate,
   priority,
   status,
+  onDelete,
 }) => {
   const priorityColors: Record<string, string> = {
     low: "bg-green-500",
@@ -46,6 +50,12 @@ const TaskCard: React.FC<TaskCardProps> = ({
           >
             {priority}
           </span>
+        </div>
+        <div
+          className="flex flex-col cursor-pointer"
+          onClick={() => onDelete(id)}
+        >
+          <MdDeleteOutline size={24} />
         </div>
       </div>
 
