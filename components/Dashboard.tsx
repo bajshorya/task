@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { DragEvent, useEffect, useState } from "react";
 import {
   collection,
   getDocs,
@@ -6,19 +6,18 @@ import {
   where,
   doc,
   deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 import TaskCard, { TaskCardProps } from "../components/ui/TaskCard";
 import { auth, db } from "@/config/firebase";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 
-const Dashboard: React.FC = () => {
+export const Dashboard: React.FC = () => {
   const router = useRouter();
-  const routeToSignin = () => {
-    router.push("/signin");
-  };
   const [tasks, setTasks] = useState<TaskCardProps[]>([]);
   const [user, setUser] = useState<User | null>(null);
+  const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -64,6 +63,29 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const handleDragStart = (id: string) => {
+    setDraggedTaskId(id);
+  };
+
+  const handleDrop = async (status: "To Do" | "In Progress" | "Completed") => {
+    if (!draggedTaskId) return;
+
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === draggedTaskId ? { ...task, status } : task
+      )
+    );
+
+    try {
+      const taskDoc = doc(db, "tasks", draggedTaskId);
+      await updateDoc(taskDoc, { status });
+    } catch (error) {
+      console.error("Error updating task status:", error);
+    }
+
+    setDraggedTaskId(null);
+  };
+
   const groupedTasks = {
     "To Do": tasks.filter((task) => task.status === "To Do"),
     "In Progress": tasks.filter((task) => task.status === "In Progress"),
@@ -74,7 +96,7 @@ const Dashboard: React.FC = () => {
     return (
       <div className="p-4 text-center text-xl font-semibold">
         <button
-          onClick={routeToSignin}
+          onClick={() => router.push("/signin")}
           className="border p-3 bg-slate-900 rounded-lg mt-3"
         >
           Get Started
@@ -86,7 +108,14 @@ const Dashboard: React.FC = () => {
   return (
     <div className="flex space-x-4 p-4">
       {Object.entries(groupedTasks).map(([status, tasks]) => (
-        <div key={status} className="w-1/3">
+        <div
+          key={status}
+          className="w-1/3"
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={() =>
+            handleDrop(status as "To Do" | "In Progress" | "Completed")
+          }
+        >
           <h2 className="text-2xl font-bold mb-4">{status}</h2>
           <div className="space-y-4">
             {tasks.length > 0 ? (
@@ -99,7 +128,8 @@ const Dashboard: React.FC = () => {
                   dueDate={task.dueDate}
                   priority={task.priority}
                   status={task.status}
-                  onDelete={deleteTask} // Pass delete function here
+                  onDelete={deleteTask}
+                  onDragStart={handleDragStart}
                 />
               ))
             ) : (
@@ -111,5 +141,3 @@ const Dashboard: React.FC = () => {
     </div>
   );
 };
-
-export default Dashboard;

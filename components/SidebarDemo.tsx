@@ -7,7 +7,7 @@ import { getAuth, signOut, User } from "firebase/auth";
 import app, { addTaskToFirestore } from "@/config/firebase";
 import { useRouter } from "next/navigation";
 import TaskForm, { TaskData } from "../components/TaskForm";
-import Dashboard from "../components/Dashboard"; // Adjusted import path
+import { Dashboard } from "../components/Dashboard"; 
 
 const auth = getAuth(app);
 
@@ -99,7 +99,6 @@ export function SidebarDemo() {
       <div className="flex flex-1">
         <div className="p-2 md:p-10 text-white rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
           {currentView === "dashboard" && <Dashboard />}{" "}
-          {/* Display the Dashboard component */}
           {currentView === "taskForm" && (
             <div className="h-screen bg-neutral-900 flex items-center justify-center">
               <TaskForm onSubmit={handleAddTask} />
