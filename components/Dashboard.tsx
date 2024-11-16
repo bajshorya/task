@@ -1,4 +1,5 @@
 import React, { DragEvent, useEffect, useState } from "react";
+import { Dropdown } from "flowbite-react";
 import {
   collection,
   getDocs,
@@ -18,6 +19,10 @@ export const Dashboard: React.FC = () => {
   const [tasks, setTasks] = useState<TaskCardProps[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
+
+  const [filterStatus, setFilterStatus] = useState<string | null>(null);
+  const [filterPriority, setFilterPriority] = useState<string | null>(null);
+  const [sortCriterion, setSortCriterion] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -86,10 +91,27 @@ export const Dashboard: React.FC = () => {
     setDraggedTaskId(null);
   };
 
+  const filteredTasks = tasks.filter((task) => {
+    if (filterStatus && task.status !== filterStatus) return false;
+    if (filterPriority && task.priority !== filterPriority) return false;
+    return true;
+  });
+
+  const sortedTasks = filteredTasks.sort((a, b) => {
+    if (sortCriterion === "deadline") {
+      return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+    }
+    if (sortCriterion === "priority") {
+      const priorityOrder = { low: 1, medium: 2, high: 3 };
+      return priorityOrder[b.priority] - priorityOrder[a.priority];
+    }
+    return 0;
+  });
+
   const groupedTasks = {
-    "To Do": tasks.filter((task) => task.status === "To Do"),
-    "In Progress": tasks.filter((task) => task.status === "In Progress"),
-    Completed: tasks.filter((task) => task.status === "Completed"),
+    "To Do": sortedTasks.filter((task) => task.status === "To Do"),
+    "In Progress": sortedTasks.filter((task) => task.status === "In Progress"),
+    Completed: sortedTasks.filter((task) => task.status === "Completed"),
   };
 
   if (!user) {
@@ -107,6 +129,95 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div className="flex space-x-4 p-4">
+      <div>
+        <div className="m-3">
+          <Dropdown
+            label="Filter"
+            dismissOnClick={false}
+            className="text-black bg-gray-300"
+          >
+            <Dropdown.Header className="bg-black text-white">
+              Status
+            </Dropdown.Header>
+            <Dropdown.Item
+              onClick={() => setFilterStatus("To Do")}
+              className={`${
+                filterStatus === "To Do" ? "bg-blue-100 text-blue-600" : ""
+              }`}
+            >
+              To Do
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => setFilterStatus("In Progress")}
+              className={`${
+                filterStatus === "In Progress"
+                  ? "bg-blue-100 text-blue-600"
+                  : ""
+              }`}
+            >
+              In Progress
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => setFilterStatus("Completed")}
+              className={`${
+                filterStatus === "Completed" ? "bg-blue-100 text-blue-600" : ""
+              }`}
+            >
+              Completed
+            </Dropdown.Item>
+            <Dropdown.Divider />
+            <Dropdown.Header className="bg-black text-white ">
+              Priority
+            </Dropdown.Header>
+            <Dropdown.Item
+              onClick={() => setFilterPriority("high")}
+              className={`${
+                filterPriority === "high" ? "bg-blue-100 text-blue-600" : ""
+              }`}
+            >
+              High
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => setFilterPriority("medium")}
+              className={`${
+                filterPriority === "medium" ? "bg-blue-100 text-blue-600" : ""
+              }`}
+            >
+              Medium
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => setFilterPriority("low")}
+              className={`${
+                filterPriority === "low" ? "bg-blue-100 text-blue-600" : ""
+              }`}
+            >
+              Low
+            </Dropdown.Item>
+          </Dropdown>
+        </div>
+
+        <button
+          className="m-3 border px-4 py-1 rounded-md  "
+          onClick={() => {
+            setFilterStatus(null);
+            setFilterPriority(null);
+          }}
+        >
+          Clear Filters
+        </button>
+
+        <button
+          className="m-3 border px-4 py-1 rounded-md"
+          onClick={() =>
+            setSortCriterion((prev) =>
+              prev === "deadline" ? "priority" : "deadline"
+            )
+          }
+        >
+          Sort by {sortCriterion === "deadline" ? "Priority" : "Deadline"}
+        </button>
+      </div>
+
       {Object.entries(groupedTasks).map(([status, tasks]) => (
         <div
           key={status}
